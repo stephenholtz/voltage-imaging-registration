@@ -10,7 +10,7 @@ import SimpleITK as sitk
 continue_from_previous_reg = True
 
 def get_next_mov_image():
-    """ Return file name of the next moving image to register """
+    """ Return file number of next moving image to register """
     
     reg_imgs = glob.glob(os.path.join(reg_output_dir, "*.tif*"))
     n_reg_imgs = len(reg_imgs)
@@ -19,7 +19,7 @@ def get_next_mov_image():
 
     # TODO: error check here
 
-    return n_reg_imgs
+    return n_reg_imgs + 1
 
 # Run from directory with data for now
 # TODO: pass command line args
@@ -66,7 +66,7 @@ elastix.SetParameterMap(param_map)
 if continue_from_previous_reg: 
     start_img = get_next_mov_image()
 else:
-    start_img = 0
+    start_img = 1
 
 print ""
 print "Starting from image #" + str(start_img)
@@ -74,7 +74,8 @@ print ""
 
 start = time.clock()
 
-for idx, moving_image_path in enumerate(moving_image_paths[start_img-1:-1]):
+#for idx, moving_image_path in enumerate(moving_image_paths[start_img-1:]):
+for moving_image_path in moving_image_paths[start_img-1:-1]:
     img_name = os.path.split(moving_image_path)[-1]
     print "Registering " + img_name
 
