@@ -30,7 +30,7 @@ def determine_max_proc():
         nproc = subprocess.Popen("nproc", stdout=subprocess.PIPE)
 
     max_processes = int(nproc.stdout.readline()[0:-1])
-    max_processes = round(max_processes/2)-1
+    max_processes = round(max_processes*.75)-1
     return max_processes
 
 def get_remaining_images(reg_output_dir,moving_image_dir):
@@ -64,12 +64,16 @@ def main():
         sorted_moving_image_paths = sorted_moving_image_paths
 
     if USE_IMAGE_MASK:
-        mask_images = os.path.join(cwd,"mask_image")
+        mask_image_dir = os.path.join(cwd,"mask_image")
         mask_image_path = glob.glob(os.path.join(mask_image_dir, "*.tif*"))[0]
 
     # Make final output directory and dir for temporary registration output
     for d in [reg_output_dir, elastix_output_dir]:
-        os.makedirs(d)
+        try:
+            os.makedirs(d)
+        except OSError:
+            if not os.path.isdir(d):
+                raise
 
     # TODO: specify parameter file folder location
     # Apply series of registrations
@@ -92,6 +96,9 @@ def main():
     # Only spawn this many processes
     max_processes = determine_max_proc()
 
+    # Dictionary to keep track of processes
+    outstanding_processes = {}
+
     reg_clock_start = time.clock()
 
     img_idx = 0;
@@ -104,7 +111,7 @@ def main():
 
             # Output dir is process specific, move to registration output later
             curr_output_dir = os.path.join(elastix_output_dir,"reg_image_"+str(img_idx+1))
-            if os.path.isdir(curr_output_dir)
+            if os.path.isdir(curr_output_dir):
                 shutil.rmtree(curr_output_dir)
             os.makedirs(curr_output_dir)
 
@@ -117,11 +124,11 @@ def main():
 
             if USE_IMAGE_MASK:
                 # Use the same mask for fixed and moving images
-                elastix_cmd.append(" -fMask " + mask_image_path
-                                   " -mMask " + mask_image_path)
+                elastix_cmd += " -fMask " + mask_image_path + \
+                               " -mMask " + mask_image_path
             if NO_TERMINAL_OUTPUT:
                 # Send output to /dev/null
-                elastix_cmd.append(" > /dev/null 2>&1")
+                elastix_cmd += " > /dev/null 2>&1"
 
             # Send command
             print "elastix_cmd: %s" % (elastix_cmd)
@@ -142,55 +149,30 @@ def main():
 
             # remove processes which are finished
             to_delete = []
-            for p in iter(outstanding_processes.keys())
+            for p in iter(outstanding_processes.keys()):
                 p.poll()
                 if p.returncode != None:
-                    todelete.append(p)
+                    to_delete.append(p)
 
-            for p in iter(todelete):
+            for p in iter(to_delete):
                 del outstanding_processes[p]
 
-        # Wait for all processes to complete
-        for p in iter(outstanding_processes.keys())
-            p.wait()
+    # Wait for all processes to complete
+    for p in iter(outstanding_processes.keys()):
+        p.wait()
 
-        # move all of the resulting images to one directory
-        elastix_out_folders = glob.glob(os.path.join(elastix_output_dir,"reg_image_*"))
-        for filepath in iter(elastix_out_folders)
-            origin_full_path = glob.glob(os.path.join(filepath),"*.tif*")
-            reg_img_name = os.path.split(origin_full_path)[-1]
-            destin_full_path = os.path.join(reg_output_dir,reg_img_name)
+    # move all of the resulting images to one directory
+    elastix_out_folders = glob.glob(os.path.join(elastix_output_dir,"reg_image_*"))
+    for filepath in iter(elastix_out_folders):
+        origin_full_path = glob.glob(os.path.join(filepath,"*.tif*"))[-1]
+        reg_img_name = os.path.basename(origin_full_path)
+        destin_full_path = os.path.join(reg_output_dir,reg_img_name)
 
-            print destin_full_path
-            shutil.move(origin_full_path,destin_full_path)
+        print destin_full_path
+        shutil.move(origin_full_path,destin_full_path)
+
     reg_clock_end = time.clock()
     print "Total elapsed time: " + str(reg_clock_end - reg_clock_start)
 
 # Run
 main()
-
-"""
-        From previous
-
-        for idx, moving_image_path in enumerate(moving_image_paths[start_img-1:]):
-        img_name = os.path.split(moving_image_path)[-1]
-        print "Registering " + img_name
-
-        txt_cmd = ("elastix"
-                    + " -f "  + fixed_image_path
-                    + " -m " + moving_image_path
-                    + " -out " + elastix_output_dir
-                    + " -p " + param_2_file_path
-                    + " -threads " + str(n_threads))
-                    #+ " -p " + param_1_file_path
-                    #+ " -p " + param_3_file_path
-        #print txt_cmd
-        subprocess.call(txt_cmd, shell=True)
-        #print subprocess.Popen("echo $PATH", shell=True, stdout=subprocess.PIPE).stdout.read()
-
-        # Rename file from output
-        output_filepath = glob.glob(os.path.join(elastix_output_dir, "result.*.tif*"))[0]
-        shutil.move(output_filepath, os.path.join(reg_output_dir,'reg_'+img_name))
-
-        print "Elapsed time " + str(time.clock())
-"""
