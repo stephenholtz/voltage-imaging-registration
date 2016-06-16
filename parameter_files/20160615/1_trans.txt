@@ -1,18 +1,33 @@
 // Translational registration to help affine later
+// SLH 2016
+
+// ******** General Settings ********
+
+// Only write the final image
+(WriteResultImage "true")
+(CompressResultImage "false")
+
+// Save time by not writing parameters
+(WriteTransformParametersEachResolution "false")
+(WriteTransformParametersEachIteration "false")
+
+(ShowExactMetricValue "false")
+
+//Default pixel value for pixels that come from outside the picture
+(DefaultPixelValue 0)
+
+// The pixel type and format of the resulting deformed moving image
+// Unsigned short works with tiff
+(ResultImageFormat "tiff")
+(ResultImagePixelType "unsigned short")
 
 (FixedInternalImagePixelType "float")
 (MovingInternalImagePixelType "float")
+
 (FixedImageDimension 2)
 (MovingImageDimension 2)
-(UseDirectionCosines "true")
 
-//Default pixel value for pixels that come from outside the picture:
-(DefaultPixelValue 0)
-// Save time and don't write image
-(WriteResultImage "false")
-// The pixel type and format of the resulting deformed moving image
-(ResultImagePixelType "short")
-(ResultImageFormat "tiff")
+(UseDirectionCosines "true")
 
 // **************** Main Components **************************
 
@@ -57,7 +72,7 @@
 // for the mutual information. 16 or 32 usually works fine.
 // You could also employ a hierarchical strategy:
 //(NumberOfHistogramBins 16 32 64)
-(NumberOfHistogramBins 32)
+(NumberOfHistogramBins 16 32 64)
 
 // If you use a mask, this option is important. 
 // If the mask serves as region of interest, set it to false.
@@ -89,7 +104,7 @@
 // Maximum number of iterations in each resolution level:
 // 200-500 works usually fine for rigid registration.
 // For more robustness, you may increase this to 1000-2000.
-(MaximumNumberOfIterations 100)
+(MaximumNumberOfIterations 400)
 
 // The step size of the optimizer, in mm. By default the voxel size is used.
 // which usually works well. In case of unusual high-resolution images

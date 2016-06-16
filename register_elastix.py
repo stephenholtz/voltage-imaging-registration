@@ -76,17 +76,17 @@ for idx, moving_image_path in enumerate(moving_image_paths[start_img-1:]):
                 + " -f "  + fixed_image_path
                 + " -m " + moving_image_path
                 + " -out " + elastix_output_dir 
-                + " -p " + param_1_file_path
                 + " -p " + param_2_file_path 
-                + " -p " + param_3_file_path 
                 + " -threads " + str(n_threads))
-    #print subprocess.Popen("echo $PATH", shell=True, stdout=subprocess.PIPE).stdout.read()
+                #+ " -p " + param_1_file_path
+                #+ " -p " + param_3_file_path 
     #print txt_cmd
     subprocess.call(txt_cmd, shell=True)
+    #print subprocess.Popen("echo $PATH", shell=True, stdout=subprocess.PIPE).stdout.read()
 
     # Rename file from output
-    shutil.move(os.path.join(elastix_output_dir,'result.2.tiff'),
-                os.path.join(reg_output_dir,'reg_'+img_name))
+    output_filepath = glob.glob(os.path.join(elastix_output_dir, "result.*.tif*"))[0]
+    shutil.move(output_filepath, os.path.join(reg_output_dir,'reg_'+img_name))
 
     print "Elapsed time " + str(time.clock())
     print ""
