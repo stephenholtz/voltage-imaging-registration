@@ -50,6 +50,9 @@
 (Transform "EulerTransform")
 (Metric "AdvancedMattesMutualInformation")
 
+// SPEED INCREASE: Use the faster version of Mattes mutual information
+(UseFastAndLowMemoryVersion "true") 
+
 // ***************** Transformation **************************
 
 // Scales the rotations compared to the translations, to make
