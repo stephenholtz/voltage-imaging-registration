@@ -30,7 +30,7 @@ def determine_max_proc():
         nproc = subprocess.Popen("nproc", stdout=subprocess.PIPE)
 
     max_processes = int(nproc.stdout.readline()[0:-1])
-    max_processes = round(max_processes*.75)-1
+    max_processes = round(max_processes*.9)-1
     return max_processes
 
 def get_remaining_images(reg_output_dir,moving_image_dir):
