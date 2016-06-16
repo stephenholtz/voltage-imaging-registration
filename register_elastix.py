@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 
+# Be sure elastix/bin and elastix/lib are in the right paths
+# and python can see them
+
 import os
 import glob
 import time
 import subprocess
+import shutil
 
 # Script settings
 continue_from_previous_reg = True
@@ -41,17 +45,16 @@ for d in [reg_output_dir, elastix_output_dir]:
 # Use the image in this directory as fixed_image
 fixed_image_path = glob.glob(os.path.join(fixed_image_dir, "*.tif*"))[0]
 moving_image_paths = glob.glob(os.path.join(moving_image_dir, "*.tif*"))
-
-elastix = sitk.SimpleElastix()
-elastix.SetFixedImage(fixed_image)
+moving_image_paths = sorted(moving_image_paths)
 
 # Apply series of registrations
+code_loc = os.path.dirname(__file__)
 # registration 1 translation
-param_1_file_path = os.path.join(cwd,"parameter_files","20160615","1_trans.txt")
+param_1_file_path = os.path.join(code_loc,"parameter_files","20160615","1_trans.txt")
 # registration 2 rigid
-param_2_file_path = os.path.join(cwd,"parameter_files","20160615","2_rigid.txt")
+param_2_file_path = os.path.join(code_loc,"parameter_files","20160615","2_rigid.txt")
 # registration 3 affine
-param_3_file_path = os.path.join(cwd,"parameter_files","20160615","3_affine.txt")
+param_3_file_path = os.path.join(code_loc,"parameter_files","20160615","3_affine.txt")
 
 if continue_from_previous_reg: 
     start_img = get_next_mov_image()
@@ -64,17 +67,27 @@ print ""
 
 start = time.clock()
 
+
 for idx, moving_image_path in enumerate(moving_image_paths[start_img-1:]):
     img_name = os.path.split(moving_image_path)[-1]
     print "Registering " + img_name
-    subprocess.call(["elastix",
-                     "-f "+fixed_image_path,
-                     "-m "+moving_image_path,
-                     "-out "+reg_output_dir,
-                     "-p "+param_1_file_path,
-                     "-p "+param_2_file_path,
-                     "-p "+param_3_file_path,
-                     "-threads "+str(n_threads)]
+
+    txt_cmd = ("elastix" 
+                + " -f "  + fixed_image_path
+                + " -m " + moving_image_path
+                + " -out " + elastix_output_dir 
+                + " -p " + param_1_file_path
+                + " -p " + param_2_file_path 
+                + " -p " + param_3_file_path 
+                + " -threads " + str(n_threads))
+    #print subprocess.Popen("echo $PATH", shell=True, stdout=subprocess.PIPE).stdout.read()
+    #print txt_cmd
+    subprocess.call(txt_cmd, shell=True)
+
+    # Rename file from output
+    shutil.move(os.path.join(elastix_output_dir,'result.2.tiff'),
+                os.path.join(reg_output_dir,'reg_'+img_name))
+
     print "Elapsed time " + str(time.clock())
     print ""
 
