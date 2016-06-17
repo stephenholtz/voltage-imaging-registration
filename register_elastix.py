@@ -4,6 +4,7 @@
 # and python can see them
 
 # TODO: use a parameter_file folder for iterative transformations
+# TODO: better scheduling for processor time
 
 import os
 import glob
@@ -15,7 +16,7 @@ import shutil
 # Script settings
 NO_TERMINAL_OUTPUT = True # send output to /dev/null
 USE_IMAGE_MASK = True # adds the -fMask and -mMask flags to elastix command
-CONTINUE_FROM_PREVIOUS_REG = True # start up again after an interruption
+CONTINUE_FROM_PREVIOUS_REG = False # start up again after an interruption
 
 def determine_max_proc():
     """Determine reasonable number of cores to use"""
@@ -79,7 +80,7 @@ def main():
     # registration 1 translation
     param_1_file_path = os.path.join(code_loc,"parameter_files","20160615","1_trans.txt")
     # registration 2 rigid
-    param_2_file_path = os.path.join(code_loc,"parameter_files","20160615","2_rigid.txt")
+    param_2_file_path = os.path.join(code_loc,"parameter_files","rigid","rigid_fast.txt")
     # registration 3 affine
     param_3_file_path = os.path.join(code_loc,"parameter_files","20160615","3_affine.txt")
 
