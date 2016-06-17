@@ -1,0 +1,12 @@
+# quick and dirty fix to the tiled images out of elastix
+from skimage import external
+from skimage import data # for some reason also reqired
+import os
+
+cwd = os.getcwd()
+filepaths = sorted(os.listdir(cwd))
+for filepath in iter(filepaths):
+    print filepath
+    tiff = external.tifffile.imread(os.path.join(cwd,filepath))
+    tiff = external.tifffile.imsave(os.path.join(cwd,filepath),tiff)
+
