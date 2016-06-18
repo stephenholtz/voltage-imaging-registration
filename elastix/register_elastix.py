@@ -77,12 +77,8 @@ def main():
     # TODO: specify parameter file folder location
     # Apply series of registrations
     code_loc = os.path.dirname(__file__)
-    # registration 1 translation
-    param_1_file_path = os.path.join(code_loc,"parameter_files","20160615","1_trans.txt")
-    # registration 2 rigid
-    param_2_file_path = os.path.join(code_loc,"parameter_files","rigid","rigid_fast.txt")
-    # registration 3 affine
-    param_3_file_path = os.path.join(code_loc,"parameter_files","20160615","3_affine.txt")
+    # rigid registration
+    param_file_path = os.path.join(code_loc,"parameter_files","rigid","rigid_fast.txt")
 
 
     # Determine which images to register
@@ -124,7 +120,7 @@ def main():
                             + " -f " + fixed_image_path
                             + " -m " + moving_image_path
                             + " -out " + curr_output_path
-                            + " -p " + param_2_file_path)
+                            + " -p " + param_file_path)
             # TODO: add loop for appending subsequent parameter files from parameter
             # file containing folder
 

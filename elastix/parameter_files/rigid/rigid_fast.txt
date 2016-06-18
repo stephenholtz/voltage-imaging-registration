@@ -115,7 +115,7 @@
 // Maximum number of iterations in each resolution level:
 // 200-500 works usually fine for rigid registration.
 // For more robustness, you may increase this to 1000-2000.
-(MaximumNumberOfIterations 200)
+(MaximumNumberOfIterations 250)
 
 // The step size of the optimizer, in mm. By default the voxel size is used.
 // which usually works well. In case of unusual high-resolution images
@@ -131,7 +131,7 @@
 // in combination with the two options below, around 2000
 // samples may already suffice.
 // (NumberOfSpatialSamples 2048)
-(NumberOfSpatialSamples 1000)
+(NumberOfSpatialSamples 1250)
 
 // Refresh these spatial samples in every iteration, and select
 // them randomly. See the manual for information on other sampling
@@ -154,4 +154,4 @@
 // 0 gives worst accuracy, but is appropriate for binary images
 // (masks, segmentations); equivalent to nearest neighbor interpolation.
 // (FinalBSplineInterpolationOrder 3)
-(FinalBSplineInterpolationOrder 1)
+(FinalBSplineInterpolationOrder 3)
