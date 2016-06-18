@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# not updated for multiple processors 
+# still a reasonable starting point/example
+
 import os
 import glob
 import time
