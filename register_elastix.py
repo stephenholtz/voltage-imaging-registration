@@ -16,7 +16,7 @@ import shutil
 # Script settings
 NO_TERMINAL_OUTPUT = True # send output to /dev/null
 USE_IMAGE_MASK = True # adds the -fMask and -mMask flags to elastix command
-CONTINUE_FROM_PREVIOUS_REG = False # start up again after an interruption
+CONTINUE_FROM_PREVIOUS_REG = True # start up again after an interruption
 
 def determine_max_proc():
     """Determine reasonable number of cores to use"""
@@ -107,7 +107,8 @@ def main():
     img_idx = 0;
     while n_registered < n_images:
 
-        if len(outstanding_processes) < max_processes:
+        if (len(outstanding_processes) < max_processes) and (img_idx < n_images - 1):
+
             # Current image to use in process
             moving_image_path = sorted_moving_image_paths[img_idx]
             moving_img_name = os.path.split(moving_image_path)[-1]
@@ -169,6 +170,7 @@ def main():
     # move all of the resulting images to one directory
     elastix_out_folders = glob.glob(os.path.join(elastix_output_dir,"reg_image_*"))
 
+    # Multiple processors not needed here
     for filepath in iter(elastix_out_folders):
         origin_full_path = glob.glob(os.path.join(filepath,"*.tif*"))
         if len(origin_full_path) == 0:
