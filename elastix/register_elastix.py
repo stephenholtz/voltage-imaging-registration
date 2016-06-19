@@ -80,7 +80,6 @@ def main():
     # rigid registration
     param_file_path = os.path.join(code_loc,"parameter_files","rigid","rigid_fast.txt")
 
-
     # Determine which images to register
     n_images = len(sorted_moving_image_paths)
     if (start_img_idx+1) == n_images:
@@ -90,7 +89,8 @@ def main():
     else:
         # Register from first image not already done
         n_registered = start_img_idx + 1;
-        sorted_moving_image_paths = sorted_moving_image_paths[start_img_idx:]
+    # start indexing after last registered
+    img_idx = n_registered;
 
     # Only spawn this many processes
     max_processes = determine_max_proc()
@@ -98,14 +98,16 @@ def main():
     # Dictionary to keep track of processes
     outstanding_processes = {}
 
+    # Time it
     reg_clock_start = time.clock()
 
-    img_idx = 0;
     while n_registered < n_images:
 
-        if (len(outstanding_processes) < max_processes) and (img_idx < n_images - 1):
+        if (len(outstanding_processes) < max_processes):
 
             # Current image to use in process
+            print len(sorted_moving_image_paths)
+            print img_idx
             moving_image_path = sorted_moving_image_paths[img_idx]
             moving_img_name = os.path.split(moving_image_path)[-1]
 
