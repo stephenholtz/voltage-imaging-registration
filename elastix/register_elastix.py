@@ -106,7 +106,6 @@ def main():
         if (len(outstanding_processes) < max_processes):
 
             # Current image to use in process
-            print len(sorted_moving_image_paths)
             print img_idx
             moving_image_path = sorted_moving_image_paths[img_idx]
             moving_img_name = os.path.split(moving_image_path)[-1]
@@ -160,6 +159,8 @@ def main():
 
             for p in iter(to_delete):
                 del outstanding_processes[p]
+                # Increment number registered
+                n_registered = n_registered + 1
 
     # Wait for all processes to complete
     for p in iter(outstanding_processes.keys()):
