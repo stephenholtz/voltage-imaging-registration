@@ -51,13 +51,21 @@
 // quite ok in general. The Transform and Metric are important
 // and need to be chosen careful for each application. See manual.
 (Optimizer "AdaptiveStochasticGradientDescent")
-(Transform "EulerTransform")
+
 (Metric "AdvancedMattesMutualInformation")
 
-// SPEED INCREASE: Use the faster version of Mattes mutual information
+// SPEED INCREASE: Use the faster version of Mattes mutual info
 (UseFastAndLowMemoryVersion "true") 
 
+
+(UseAdaptiveStepSizes "true")
+
 // ***************** Transformation **************************
+
+// Use a rigid transformation
+(Transform "EulerTransform")
+
+(AutomaticParameterEstimation "true")
 
 // Scales the rotations compared to the translations, to make
 // sure they are in the same range. In general, it's best to  
@@ -107,21 +115,23 @@
 // Make sure that the number of elements equals the number
 // of resolutions times the image dimension.
 
-// Ignore the lower resolutions to speed things up
-(ImagePyramidSchedule 8 8 4 4 2 2)
+// Use lower resolutions to speed things up
+(ImagePyramidSchedule 8 8 4 4 1 1)
 
 // ******************* Optimizer ****************************
 
 // Maximum number of iterations in each resolution level:
 // 200-500 works usually fine for rigid registration.
 // For more robustness, you may increase this to 1000-2000.
-(MaximumNumberOfIterations 250)
+(MaximumNumberOfIterations 150 200 300)
 
 // The step size of the optimizer, in mm. By default the voxel size is used.
 // which usually works well. In case of unusual high-resolution images
 // (eg histology) it is necessary to increase this value a bit, to the size
 // of the "smallest visible structure" in the image:
 //(MaximumStepLength 1.0)
+// MaximumStepLength is used when AutomaticParameterEstimation is on
+(MaximumStepLength 4.0)
 
 // **************** Image sampling **********************
 
