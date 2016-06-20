@@ -83,16 +83,16 @@
 // Number of grey level bins in each resolution level,
 // Need to specify histogram bins for each mask, can be
 // hierarchical e.g. (.. 16 32)
-(NumberOfHistogramBins 16 32)
-(NumberOfFixedHistogramBins 16 32)
-(NumberOfMovingHistogramBins 16 32)
+(NumberOfHistogramBins 16 32 64)
+(NumberOfFixedHistogramBins 16 32 64)
+(NumberOfMovingHistogramBins 16 32 64)
 
 // ******************** Multiresolution **********************
 
 // The number of resolutions. 1 Is only enough if the expected
 // deformations are small. 3 or 4 mostly works fine. For large
 // images and large deformations, 5 or 6 may even be useful.
-(NumberOfResolutions 2)
+(NumberOfResolutions 3)
 
 // The downsampling/blurring factors for the image pyramids.
 // By default, the images are downsampled by a factor of 2
@@ -108,7 +108,7 @@
 // of resolutions times the image dimension.
 
 // Ignore the lower resolutions to speed things up
-(ImagePyramidSchedule 8 8 4 4)
+(ImagePyramidSchedule 8 8 4 4 2 2)
 
 // ******************* Optimizer ****************************
 

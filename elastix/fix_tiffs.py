@@ -5,8 +5,8 @@ import os
 
 cwd = os.getcwd()
 filepaths = sorted(os.listdir(cwd))
-for filepath in iter(filepaths):
-    print filepath
-    tiff = external.tifffile.imread(os.path.join(cwd,filepath))
-    tiff = external.tifffile.imsave(os.path.join(cwd,filepath),tiff)
+for filename in iter(filepaths):
+    print "Removing tiles from: " filename
+    tiff = external.tifffile.imread(os.path.join(cwd,filename))
+    tiff = external.tifffile.imsave(os.path.join(cwd,filename),tiff)
 
