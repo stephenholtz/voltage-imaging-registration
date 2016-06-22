@@ -106,7 +106,7 @@ def main():
         if (len(outstanding_processes) < max_processes):
 
             # Current image to use in process
-            print img_idx
+            print "Image index: " + str(img_idx)
             moving_image_path = sorted_moving_image_paths[img_idx]
             moving_img_name = os.path.split(moving_image_path)[-1]
 
